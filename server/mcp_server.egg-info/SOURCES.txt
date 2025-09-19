@@ -1,0 +1,17 @@
+setup.py
+server/application/__init__.py
+server/application/services.py
+server/domain/__init__.py
+server/domain/models.py
+server/domain/repository.py
+server/infrastructure/__init__.py
+server/infrastructure/db.py
+server/infrastructure/models_db.py
+server/infrastructure/repository_db.py
+server/interface/__init__.py
+server/interface/client.py
+server/interface/mcp_server.py
+server/mcp_server.egg-info/PKG-INFO
+server/mcp_server.egg-info/SOURCES.txt
+server/mcp_server.egg-info/dependency_links.txt
+server/mcp_server.egg-info/top_level.txt
