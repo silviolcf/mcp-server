@@ -1,0 +1,27 @@
+services:
+  # Servidor MCP
+  mcp-server:
+    build: .
+    container_name: mcp-vehicle-server
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONPATH=/app
+    volumes:
+      - ./vehicles.db:/app/vehicles.db
+    restart: unless-stopped
+
+  # Cliente MCP
+  mcp-client:
+    build: .
+    container_name: mcp-vehicle-client
+    depends_on:
+      - mcp-server
+    environment:
+      - PYTHONPATH=/app
+      - MCP_SERVER_URL=http://mcp-server:8000/mcp
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    stdin_open: true
+    tty: true
+    command: ["python", "client/interface/agent_runner.py"]
+

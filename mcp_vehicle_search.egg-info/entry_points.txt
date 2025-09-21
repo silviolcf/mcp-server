@@ -1,0 +1,3 @@
+[console_scripts]
+mcp-vehicle-client = client.interface.agent_runner:main
+mcp-vehicle-server = server.interface.mcp_server:main

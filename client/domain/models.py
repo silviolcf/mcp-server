@@ -11,7 +11,7 @@ class Intent:
     parameters: Dict[str, any]
 
 @dataclass
-class VechicleFilter:
+class VehicleFilter:
     """
     Represents the filters which can be applied on vehicle search
     """
@@ -35,7 +35,7 @@ class Command:
     input_data: Dict[str,Any]
 
 @dataclass
-class Vechile:
+class Vehicle:
     """
     Represents a vehicle returned by mcp server
     """
@@ -58,4 +58,5 @@ class AgentResponse:
     """
     success: bool
     message: str
-    data: Optional[List[Vechile]] = None
+    data: Optional[List[Vehicle]] = None
+    suggestion: Optional[str] = None

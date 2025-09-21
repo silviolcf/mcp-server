@@ -1,0 +1,179 @@
+Metadata-Version: 2.4
+Name: mcp-vehicle-search
+Version: 0.1.0
+Summary: MCP Vehicle Search System - Intelligent vehicle search with LangChain and OpenAI
+Author: MCP Vehicle Search Team
+License: MIT
+Keywords: mcp,vehicle,search,langchain,openai,ai
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: fastmcp>=0.1.0
+Requires-Dist: langchain>=0.1.0
+Requires-Dist: openai>=1.0.0
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: rich>=13.0.0
+Requires-Dist: tabulate>=0.9.0
+Requires-Dist: pytest>=7.0.0
+Requires-Dist: pytest-asyncio>=0.21.0
+Provides-Extra: dev
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: flake8>=6.0.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Dynamic: requires-python
+
+# MCP Vehicle Search System
+
+## 📋 Visão Geral
+
+O **MCP Vehicle Search System** é um sistema inteligente de busca de veículos que combina **Model Context Protocol (MCP)**, **LangChain** e **OpenAI** para criar uma experiência de busca conversacional avançada. O sistema permite que usuários façam consultas em linguagem natural sobre veículos e recebam resultados relevantes com sugestões inteligentes.
+
+## 🌟 Características Principais
+
+### 🤖 **Assistente Inteligente**
+- **Processamento de linguagem natural** em português
+- **Extração automática de filtros** relevantes
+- **Sugestões contextuais** quando não encontra resultados
+- **Busca iterativa** com refinamento de consultas
+
+### 🏗️ **Arquitetura Limpa**
+- **Clean Architecture** + **Hexagonal Architecture**
+- **Separação clara** entre servidor e cliente
+- **Inversão de dependências** para testabilidade
+- **Padrões de design** bem implementados
+
+### 🔧 **Tecnologias Modernas**
+- **FastMCP**: Servidor MCP de alta performance
+- **LangChain**: Framework para aplicações LLM
+- **OpenAI GPT-3.5-turbo**: Modelo de linguagem
+- **SQLAlchemy**: ORM para banco de dados
+- **Rich**: Interface de terminal rica e colorida
+
+### 🐳 **Deploy Simplificado**
+- **Docker** e **Docker Compose** para execução fácil
+- **Script de execução** automatizado
+- **Configuração mínima** necessária
+- **Ambiente isolado** e reproduzível
+
+## 🏗️ Arquitetura do Sistema
+
+### Servidor MCP (Backend)
+```
+server/
+├── domain/           # 🎯 Entidades de negócio
+├── application/      # 🔧 Casos de uso
+├── infrastructure/   # 🔌 Banco de dados e ORM
+└── interface/        # 🌐 API MCP
+```
+
+### Cliente Inteligente (Frontend)
+```
+client/
+├── domain/           # 🎯 Modelos e schemas
+├── application/      # 🔧 Serviço do agente
+├── infrastructure/   # 🔌 Cliente MCP e OpenAI
+└── interface/        # 🌐 Interface de linha de comando
+```
+
+## 🚀 Início Rápido
+
+### Pré-requisitos
+- **Python 3.10+**
+- **Docker** e **Docker Compose**
+- **OpenAI API Key**
+
+### Execução com Docker (Recomendada)
+```
+- Realize a construção das imagens docker com: docker compose up --build
+- Finalize a execução
+- Inicie o servidor em background com docker compose up -d mcp-server
+- inicie o cliente em modo interativo com docker compose run --rm mcp-client
+- para sair client digite (sair ou quit ou exit)
+- finalize o servidor com docker compose down
+```
+##  Exemplos de Uso
+
+### Consultas Básicas
+```
+Digite sua busca: Quero um Toyota
+Digite sua busca: Carro vermelho até 50000 reais
+Digite sua busca: Honda automático com ar condicionado
+```
+
+### Consultas Avançadas
+```
+Digite sua busca: Quero um carro 2020 ou mais novo, até 80000 reais, com menos de 50000 km
+Digite sua busca: Toyota Corolla branco, automático, com ar condicionado
+Digite sua busca: Carro econômico, até 40000 reais, 4 portas
+```
+
+
+
+### Executar Todos os Testes
+
+**⚠️ Importante:** Os testes precisam do PYTHONPATH configurado para funcionar corretamente.
+
+#### Opção 1: Usando o script automatizado (Recomendado)
+```bash
+# Todos os testes
+./run_tests.sh all
+
+# Apenas testes do servidor
+./run_tests.sh server
+
+# Apenas testes do cliente
+./run_tests.sh client
+
+# Testes com cobertura (requer pytest-cov)
+./run_tests.sh coverage
+```
+
+#### Opção 2: Comando manual
+```bash
+# Ativar ambiente virtual
+pyenv activate mcpserver
+
+# Configurar PYTHONPATH e executar testes
+PYTHONPATH=/home/silviolcf/Estudo/c2s/mcp-server pytest -v
+
+# Testes específicos
+PYTHONPATH=/home/silviolcf/Estudo/c2s/mcp-server pytest tests/server/ -v
+PYTHONPATH=/home/silviolcf/Estudo/c2s/mcp-server pytest tests/client/ -v
+
+# Com cobertura (requer: pip install pytest-cov)
+PYTHONPATH=/home/silviolcf/Estudo/c2s/mcp-server pytest --cov=server --cov=client --cov-report=html
+```
+
+### Cobertura de Testes
+- **Servidor**: ~85% de cobertura
+- **Cliente**: ~80% de cobertura
+- **Integração**: ~70% de cobertura
+
+## Tecnologias Utilizadas
+
+### Backend
+- **FastMCP**: Framework para servidores MCP
+- **SQLAlchemy**: ORM para Python
+- **SQLite**: Banco de dados embarcado
+- **Pydantic**: Validação de dados
+
+### Frontend
+- **LangChain**: Framework para aplicações LLM
+- **OpenAI GPT-3.5-turbo**: Modelo de linguagem
+- **Rich**: Biblioteca para terminal rico
+- **Asyncio**: Programação assíncrona
+
+### DevOps
+- **Docker**: Containerização
+- **Docker Compose**: Orquestração de containers
+- **pytest**: Framework de testes
+- **Git**: Controle de versão
+
+

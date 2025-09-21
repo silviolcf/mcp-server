@@ -1,7 +1,7 @@
-from domain.repository import VehicleRepository
-from domain.models import Vehicle
-from .models_db import VehicleDB
-from .db import SessionLocal
+from server.domain.repository import VehicleRepository
+from server.domain.models import Vehicle
+from server.infrastructure.models_db import VehicleDB
+from server.infrastructure.db import SessionLocal
 
 class VehicleRepositoryDB(VehicleRepository):
     def search_by_filter(self, filters: dict):

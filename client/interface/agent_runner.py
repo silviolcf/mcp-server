@@ -1,53 +1,143 @@
 import asyncio
+import os
 from client.application.agent_service import AgentService
 from client.infrastructure.mcp_client import MCPClient
 from tabulate import tabulate
+from rich.console import Console
+from rich.table import Table
+from rich.panel import Panel
+from rich.text import Text
+from rich import box
+
+
+async def format_vehicle_table(vehicles):
+    """Formata a tabela de veículos com Rich para melhor apresentação"""
+    console = Console()
+    
+    # Cria tabela com Rich
+    table = Table(
+        title="🚗 Veículos Encontrados",
+        box=box.ROUNDED,
+        show_header=True,
+        header_style="bold blue",
+        title_style="bold green"
+    )
+    
+    # Adiciona colunas
+    table.add_column("ID", style="dim", width=4)
+    table.add_column("Marca", style="cyan", width=12)
+    table.add_column("Modelo", style="magenta", width=12)
+    table.add_column("Cor", style="yellow", width=10)
+    table.add_column("Ano", style="green", width=6)
+    table.add_column("Preço", style="bold red", width=15)
+    table.add_column("Transmissão", style="blue", width=12)
+    table.add_column("AC", style="green", width=4)
+    table.add_column("Portas", style="dim", width=6)
+    table.add_column("Combustível", style="yellow", width=10)
+    table.add_column("Km", style="dim", width=8)
+    
+    # Adiciona dados
+    for vehicle in vehicles:
+        table.add_row(
+            str(vehicle.id),
+            vehicle.brand,
+            vehicle.model,
+            vehicle.color,
+            str(vehicle.manufacture_year),
+            f"R$ {vehicle.price:,.2f}",
+            vehicle.transmission,
+            "✅" if vehicle.ac else "❌",
+            str(vehicle.doors),
+            vehicle.fuel_type,
+            f"{vehicle.mileage:,} km"
+        )
+    
+    console.print(table)
+    return len(vehicles)
+
+
+async def wait_for_server():
+    """Aguarda o servidor MCP ficar disponível"""
+    console = Console()
+    mcp = MCPClient()
+    
+    console.print("[yellow]Aguardando servidor...[/yellow]")
+    
+    max_attempts = 30
+    attempt = 0
+    
+    while attempt < max_attempts:
+        try:
+            await mcp.get_welcome_prompt()
+            console.print("[green]✓ Servidor conectado![/green]")
+            return True
+        except Exception:
+            attempt += 1
+            await asyncio.sleep(2)
+            if attempt % 5 == 0:  # A cada 10 segundos
+                console.print(f"[yellow]Tentativa {attempt}/{max_attempts}...[/yellow]")
+    
+    console.print("[red]✗ Não foi possível conectar ao servidor[/red]")
+    return False
 
 
 async def main():
-    print("Mcp Vehicle started")
+    console = Console()
+    
+    # Banner de boas-vindas
+    welcome_panel = Panel(
+        Text("🚗 MCP Vehicle Search Assistant", style="bold green"),
+        subtitle="Sistema inteligente de busca de veículos",
+        border_style="green"
+    )
+    console.print(welcome_panel)
 
+    # Aguarda servidor ficar disponível
+    if not await wait_for_server():
+        return
+    
+    console.print("[green]Iniciando cliente...[/green]")
+    
     mcp = MCPClient()
     welcome = await mcp.get_welcome_prompt()
     
     agent = AgentService()
-    print(f"\n {welcome}")
+    console.print(f"\n[bold blue]{welcome}[/bold blue]")
+    
+    # Histórico de filtros para busca iterativa
+    search_history = []
+    
     while True:
-        user_input = input("")
+        user_input = input("\n🔍 Digite sua busca: ")
         if user_input.lower() in ["sair", "quit", "exit"]:
-            print("Obrigado, volte sempre!")
+            console.print("\n[bold green]Obrigado, volte sempre![/bold green]")
             break
 
-        response = await agent.run(user_input)
+        # Adiciona ao histórico
+        search_history.append(user_input)
+        
+        response = await agent.run(user_input, search_history)
 
-        print(f"\n {response.message}")
+        # Exibe a resposta do agente
+        if response.suggestion:
+            suggestion_panel = Panel(
+                f"[bold yellow]💡 Sugestão:[/bold yellow] {response.suggestion}",
+                border_style="yellow"
+            )
+            console.print(suggestion_panel)
+            
+            # Pergunta se o usuário quer aplicar a sugestão
+            apply_suggestion = input("\n❓ Aplicar esta sugestão? (s/n): ").lower().strip()
+            if apply_suggestion in ['s', 'sim', 'y', 'yes']:
+                # Executa busca com sugestão aplicada
+                suggestion_response = await agent.run(response.suggestion, search_history)
+                if suggestion_response.data:
+                    await format_vehicle_table(suggestion_response.data)
+                continue
+
+        # Exibe resultados se houver
         if response.data:
-            table = [
-                [
-                    vehicle.brand,
-                    vehicle.model,
-                    vehicle.color,
-                    vehicle.manufacture_year,
-                    f"R$: {vehicle.price:,.2f}",
-                    vehicle.transmission,
-                    "Sim" if vehicle.ac else "Não",
-                    vehicle.doors,
-                    vehicle.fuel_type,
-                    f"{vehicle.mileage} Km"
-                ]
-                for vehicle in response.data
-            ]
-
-            headers = [
-                "Marca", "Modelo", "Cor", "Ano", "Preço",
-                "Transmissão", "Ar-condicionado", "Portas",
-                "Combustível", "Quilometragem"
-            ]
-
-            print("\n Veículos Encontrados")
-            print(tabulate(table, headers, tablefmt="grid"))
-        else:
-            print("Nenhum veículo encontrado com os filtros fornecidos.")
+            await format_vehicle_table(response.data)
 
 
 if __name__ == "__main__":

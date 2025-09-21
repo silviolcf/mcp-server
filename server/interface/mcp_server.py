@@ -1,7 +1,7 @@
 
 from fastmcp import FastMCP, Context
-from application.services import VehicleService
-from infrastructure.repository_db import VehicleRepositoryDB
+from server.application.services import VehicleService
+from server.infrastructure.repository_db import VehicleRepositoryDB
 from typing import List, Dict
 import sys
 
@@ -25,10 +25,56 @@ def get_mcp_capabilities() -> str:
 
 
 @mcp.tool()
-def search_vehicle(filters: dict) -> List[Dict]:
+def search_vehicle(
+    brand: str = None,
+    model: str = None,
+    color: str = None,
+    fuel_type: str = None,
+    manufacture_year: int = None,
+    mileage: int = None,
+    doors: int = None,
+    transmission: str = None,
+    ac: bool = None,
+    price: float = None
+) -> List[Dict]:
     """
-    #Search vehicles in database by filters
+    Search vehicles in database by filters
+    
+    Args:
+        brand: Vehicle brand (e.g., Toyota, Honda, Ford)
+        model: Vehicle model (e.g., Corolla, Civic, Focus)
+        color: Vehicle color (e.g., red, blue, white)
+        fuel_type: Fuel type (e.g., Gasoline, Ethanol, Flex)
+        manufacture_year: Manufacturing year (e.g., 2020, 2021, 2022)
+        mileage: Maximum mileage (e.g., 50000, 100000)
+        doors: Number of doors (e.g., 2, 4)
+        transmission: Transmission type (e.g., Manual, Automatic)
+        ac: Air conditioning (true/false)
+        price: Maximum price (e.g., 50000.0, 100000.0)
     """
+    
+    # Build filters dict from parameters
+    filters = {}
+    if brand is not None:
+        filters['brand'] = brand
+    if model is not None:
+        filters['model'] = model
+    if color is not None:
+        filters['color'] = color
+    if fuel_type is not None:
+        filters['fuel_type'] = fuel_type
+    if manufacture_year is not None:
+        filters['manufacture_year'] = manufacture_year
+    if mileage is not None:
+        filters['mileage'] = mileage
+    if doors is not None:
+        filters['doors'] = doors
+    if transmission is not None:
+        filters['transmission'] = transmission
+    if ac is not None:
+        filters['ac'] = ac
+    if price is not None:
+        filters['price'] = price
 
     results = vehicle_service.search_by_filter(filters)
 

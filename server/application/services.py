@@ -1,4 +1,4 @@
-from domain.repository import VehicleRepository
+from server.domain.repository import VehicleRepository
 
 class VehicleService:
     def __init__(self, repository: VehicleRepository):

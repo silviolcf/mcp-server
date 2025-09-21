@@ -13,7 +13,3 @@ class VehicleFilterSchema(BaseModel):
     ac: Optional[bool] = None
     price: Optional[float]  = None
 
-class FilterWrapper(BaseModel):
-    filters: Dict[str, Any]
-
-

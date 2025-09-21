@@ -3,6 +3,7 @@ anyio==4.10.0
 async-timeout==4.0.3
 attrs==25.3.0
 Authlib==1.6.4
+backports.asyncio.runner==1.2.0
 certifi==2025.8.3
 cffi==2.0.0
 charset-normalizer==3.4.3
@@ -23,6 +24,7 @@ httpcore==1.0.9
 httpx==0.28.1
 httpx-sse==0.4.1
 idna==3.10
+iniconfig==2.1.0
 isodate==0.7.2
 jiter==0.11.0
 jsonpatch==1.33
@@ -43,8 +45,6 @@ lazy-object-proxy==1.12.0
 markdown-it-py==4.0.0
 MarkupSafe==3.0.2
 mcp==1.14.1
-# Editable install with no version control (mcp-server==0.1)
--e /home/silviolcf/Estudo/c2s/mcp-server/server
 mdurl==0.1.2
 more-itertools==10.8.0
 openai==1.108.0
@@ -57,12 +57,15 @@ ormsgpack==1.10.0
 packaging==25.0
 parse==1.20.2
 pathable==0.4.4
+pluggy==1.6.0
 pycparser==2.23
 pydantic==2.11.9
 pydantic-settings==2.10.1
 pydantic_core==2.33.2
 Pygments==2.19.2
 pyperclip==1.10.0
+pytest==8.4.2
+pytest-asyncio==1.2.0
 python-dotenv==1.1.1
 python-multipart==0.0.20
 PyYAML==6.0.2
@@ -82,6 +85,7 @@ starlette==0.48.0
 tabulate==0.9.0
 tenacity==9.1.2
 tiktoken==0.11.0
+tomli==2.2.1
 tqdm==4.67.1
 typing-inspection==0.4.1
 typing_extensions==4.15.0
