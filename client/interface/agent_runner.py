@@ -16,7 +16,7 @@ async def format_vehicle_table(vehicles):
     
     # Cria tabela com Rich
     table = Table(
-        title="🚗 Veículos Encontrados",
+        title="Veículos Encontrados",
         box=box.ROUNDED,
         show_header=True,
         header_style="bold blue",
@@ -46,7 +46,7 @@ async def format_vehicle_table(vehicles):
             str(vehicle.manufacture_year),
             f"R$ {vehicle.price:,.2f}",
             vehicle.transmission,
-            "✅" if vehicle.ac else "❌",
+            "Sim" if vehicle.ac else "Não",
             str(vehicle.doors),
             vehicle.fuel_type,
             f"{vehicle.mileage:,} km"
@@ -69,7 +69,7 @@ async def wait_for_server():
     while attempt < max_attempts:
         try:
             await mcp.get_welcome_prompt()
-            console.print("[green]✓ Servidor conectado![/green]")
+            console.print("[green]Servidor conectado![/green]")
             return True
         except Exception:
             attempt += 1
@@ -77,22 +77,20 @@ async def wait_for_server():
             if attempt % 5 == 0:  # A cada 10 segundos
                 console.print(f"[yellow]Tentativa {attempt}/{max_attempts}...[/yellow]")
     
-    console.print("[red]✗ Não foi possível conectar ao servidor[/red]")
+    console.print("[red]Não foi possível conectar ao servidor[/red]")
     return False
 
 
 async def main():
     console = Console()
     
-    # Banner de boas-vindas
     welcome_panel = Panel(
-        Text("🚗 MCP Vehicle Search Assistant", style="bold green"),
+        Text("MCP Vehicle Search Assistant", style="bold green"),
         subtitle="Sistema inteligente de busca de veículos",
         border_style="green"
     )
     console.print(welcome_panel)
 
-    # Aguarda servidor ficar disponível
     if not await wait_for_server():
         return
     
@@ -104,38 +102,32 @@ async def main():
     agent = AgentService()
     console.print(f"\n[bold blue]{welcome}[/bold blue]")
     
-    # Histórico de filtros para busca iterativa
     search_history = []
     
     while True:
-        user_input = input("\n🔍 Digite sua busca: ")
+        user_input = input("\nDigite sua busca: ")
         if user_input.lower() in ["sair", "quit", "exit"]:
             console.print("\n[bold green]Obrigado, volte sempre![/bold green]")
             break
 
-        # Adiciona ao histórico
         search_history.append(user_input)
         
         response = await agent.run(user_input, search_history)
 
-        # Exibe a resposta do agente
         if response.suggestion:
             suggestion_panel = Panel(
-                f"[bold yellow]💡 Sugestão:[/bold yellow] {response.suggestion}",
+                f"[bold yellow]Sugestão:[/bold yellow] {response.suggestion}",
                 border_style="yellow"
             )
             console.print(suggestion_panel)
             
-            # Pergunta se o usuário quer aplicar a sugestão
-            apply_suggestion = input("\n❓ Aplicar esta sugestão? (s/n): ").lower().strip()
+            apply_suggestion = input("\nAplicar esta sugestão? (s/n): ").lower().strip()
             if apply_suggestion in ['s', 'sim', 'y', 'yes']:
-                # Executa busca com sugestão aplicada
                 suggestion_response = await agent.run(response.suggestion, search_history)
                 if suggestion_response.data:
                     await format_vehicle_table(suggestion_response.data)
                 continue
 
-        # Exibe resultados se houver
         if response.data:
             await format_vehicle_table(response.data)
 
